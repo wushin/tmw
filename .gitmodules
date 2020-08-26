@@ -1,0 +1,9 @@
+[submodule "game-data"]
+	path = server/game-data
+	url = git@gitlab.com:themanaworld/game-data.git
+[submodule "manaserv"]
+	path = server/manaserv
+	url = git@gitlab.com:themanaworld/manaserv.git
+[submodule "client"]
+	path = clients/src
+	url = git@gitlab.com:themanaworld/client.git

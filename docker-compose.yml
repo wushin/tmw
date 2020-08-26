@@ -1,0 +1,58 @@
+version: '3.6'
+
+networks:
+    web-network:
+
+services:
+    mysql:
+        build:
+            context: ./mysql/
+            dockerfile: Dockerfile
+            network: host
+        container_name: mysql
+        volumes:
+            - ./mysql/data/db:/var/lib/mysql:rw,cached
+            - ./mysql/config/:/var/lib/db_backup:rw,cached
+            - ./mysql/config/auth.cnf:/root/.my.cnf:rw,cached
+        environment:
+            - MYSQL_ROOT_PASSWORD
+            - DB_NAME
+            - MANASERV_PASS
+        restart: always
+        ports:
+            - '3306'
+        networks:
+            - web-network
+
+    tmw:
+        build:
+            context: ./server/
+            dockerfile: Dockerfile
+            network: host
+        container_name: tmw
+        command: /bin/bash -c "/server/game-data/start.sh"
+        volumes:
+            - ./server/manaserv/:/server/manaserv:rw,cached
+            - ./server/game-data/:/server/game-data:rw,cached
+        restart: always
+        ports:
+            - '9604:9604'
+            - '9603:9603'
+            - '9602:9602'
+            - '9601:9601'
+        networks:
+            - web-network
+        depends_on:
+            - mysql
+
+    client:
+        build:
+            context: ./clients/
+            dockerfile: Dockerfile
+            network: host
+        container_name: client
+        command: /bin/bash -c "cd /source && qmake manamobile.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug && make -j16"
+        volumes:
+            - ./clients/src:/source
+        networks:
+            - web-network
