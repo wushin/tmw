@@ -7,3 +7,6 @@
 [submodule "client"]
 	path = clients/src
 	url = git@gitlab.com:themanaworld/client.git
+[submodule "nginx"]
+	path = nginx/files
+	url = git@git-as-wushin:wushin/tmw-nginx.git

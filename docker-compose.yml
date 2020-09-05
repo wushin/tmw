@@ -24,6 +24,27 @@ services:
         networks:
             - web-network
 
+    nginx:
+        build:
+            context: ./nginx/
+            dockerfile: Dockerfile
+            network: host
+        container_name: nginx
+        command: /bin/bash -c "envsubst \"`for v in $$(compgen -v);do printf '$${%s} ' $$v;done`'\" < /etc/nginx/sites-available/client-data.conf.template > /etc/nginx/sites-available/client-data.conf && exec nginx -g 'daemon off;'"
+        environment:
+            - CLIENT_DATA_SERVER
+        ports:
+            - '80:80'
+            - '443:443'
+        volumes:
+            - ./nginx/files/:/etc/nginx/:rw,cached
+        depends_on:
+            - tmw
+        restart: always
+        networks:
+            - web-network
+
+
     tmw:
         build:
             context: ./server/
@@ -34,6 +55,8 @@ services:
         volumes:
             - ./server/manaserv/:/server/manaserv:rw,cached
             - ./server/game-data/:/server/game-data:rw,cached
+        environment:
+            - CLIENT_DATA_SERVER
         restart: always
         ports:
             - '9604:9604'
