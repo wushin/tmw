@@ -12,8 +12,9 @@ services:
         container_name: mysql
         volumes:
             - ./mysql/data/db:/var/lib/mysql:rw,cached
-            - ./mysql/config/:/var/lib/db_backup:rw,cached
+            - ./mysql/config/install-db.sh:/var/lib/install-db.sh:rw,cached
             - ./mysql/config/auth.cnf:/root/.my.cnf:rw,cached
+            - ./server/game-data/:/server/game-data:rw,cached
         environment:
             - MYSQL_ROOT_PASSWORD
             - DB_NAME
@@ -38,6 +39,7 @@ services:
             - '443:443'
         volumes:
             - ./nginx/files/:/etc/nginx/:rw,cached
+            - ./server/game-data/:/server/game-data:rw,cached
         depends_on:
             - tmw
         restart: always
