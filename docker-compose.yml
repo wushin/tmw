@@ -41,19 +41,41 @@ services:
             - ./nginx/files/:/etc/nginx/:rw,cached
             - ./server/game-data/:/server/game-data:rw,cached
         depends_on:
-            - tmw
+            - account
+            - game
         restart: always
         networks:
             - web-network
 
-
-    tmw:
+    account:
         build:
             context: ./server/
             dockerfile: Dockerfile
             network: host
-        container_name: tmw
-        command: /bin/bash -c "/server/game-data/start.sh"
+        container_name: account
+        command: /bin/bash -c " cd /server/game-data/ && /usr/local/bin/manaserv-account"
+        volumes:
+            - ./server/manaserv/:/server/manaserv:rw,cached
+            - ./server/game-data/:/server/game-data:rw,cached
+        environment:
+            - CLIENT_DATA_SERVER
+        restart: always
+        ports:
+            - '9603:9603'
+            - '9602:9602'
+            - '9601:9601'
+        networks:
+            - web-network
+        depends_on:
+            - mysql
+
+    game:
+        build:
+            context: ./server/
+            dockerfile: Dockerfile
+            network: host
+        container_name: game
+        command: /bin/bash -c " cd /server/game-data/ && /usr/local/bin/manaserv-game"
         volumes:
             - ./server/manaserv/:/server/manaserv:rw,cached
             - ./server/game-data/:/server/game-data:rw,cached
@@ -62,9 +84,6 @@ services:
         restart: always
         ports:
             - '9604:9604'
-            - '9603:9603'
-            - '9602:9602'
-            - '9601:9601'
         networks:
             - web-network
         depends_on:
