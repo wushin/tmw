@@ -21,10 +21,3 @@ if [[ $REPLY =~ ^[Yy]$ ]]
 then
     sudo docker volume prune -f
 fi
-
-read -p "Do you want to destroy your database? [y/N] " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-    sudo rm -fR ./mysql/data/db/
-fi

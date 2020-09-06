@@ -4,27 +4,6 @@ networks:
     web-network:
 
 services:
-    mysql:
-        build:
-            context: ./mysql/
-            dockerfile: Dockerfile
-            network: host
-        container_name: mysql
-        volumes:
-            - ./mysql/data/db:/var/lib/mysql:rw,cached
-            - ./mysql/config/install-db.sh:/var/lib/install-db.sh:rw,cached
-            - ./mysql/config/auth.cnf:/root/.my.cnf:rw,cached
-            - ./server/game-data/:/server/game-data:rw,cached
-        environment:
-            - MYSQL_ROOT_PASSWORD
-            - DB_NAME
-            - MANASERV_PASS
-        restart: always
-        ports:
-            - '3306'
-        networks:
-            - web-network
-
     nginx:
         build:
             context: ./nginx/
@@ -57,6 +36,7 @@ services:
         volumes:
             - ./server/manaserv/:/server/manaserv:rw,cached
             - ./server/game-data/:/server/game-data:rw,cached
+            - ./server/sqlite3/:/server/sqlite3:rw,cached
         environment:
             - CLIENT_DATA_SERVER
         restart: always
@@ -66,8 +46,6 @@ services:
             - '9601:9601'
         networks:
             - web-network
-        depends_on:
-            - mysql
 
     game:
         build:
@@ -86,8 +64,6 @@ services:
             - '9604:9604'
         networks:
             - web-network
-        depends_on:
-            - mysql
 
     client:
         build:

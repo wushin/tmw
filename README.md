@@ -6,25 +6,24 @@
 * Repo requires a `git clone --recursive` (git 1+) or `git clone --recurse-submodules` (git 2+) depending on your version of of git 
 
 ## Initialize
-* sudo docker-compose up -d --build
+* `bash set-up.sh`
 
-## Destroy Env
+## Destroy
 * `bash destroy.sh`
   * This script will prompt you to:
     * Stop all containers
     * Destroy all containers
-    * Destroy the Database
     * Destroy all Volumes
 
 # Working in Containers
-* Login
+* Login to a container
   * `sudo docker exec -it [<container_hostname>] bash`
-* Get logs
+* Get logs from a container
   * `sudo docker-compose logs -f [<container_name>]`
-* Show
+* Show running status and ports of a container
   * `sudo docker-compose ps`
-* Build and Start
-  * `sudo docker-compose build -d`
+* Build and Start all containers
+  * `sudo docker-compose up -d --build`
 * Stop all containers
   * `sudo docker-compose kill`
 * Delete inactive containers
